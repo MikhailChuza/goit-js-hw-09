@@ -63,28 +63,37 @@ const images = [
     description: 'Lighthouse Coast Sea',
   },
 ];
-const list = document.querySelector("ul.gallery");
-const listItem = images.map(image => `<li class="gallery-item">
-<a class="gallery-link" href="${image.original}">
-<img class="gallery-image" src="${image.preview}" data-source="${image.original}" alt="${image.description}" width="360" height="200"/></a></li>`
-).join('');
 
-list.insertAdjacentHTML('beforeend', listItem);
 
-//basicLightbox
 
-list.addEventListener("click", (event) => {
-    event.preventDefault();
+const galleryContainer = document.querySelector('.gallery');
 
-    // скидаємо дефолт браузеру
+// функція створення розмітки у html
+function createGalleryItem({ preview, original, description }) {
+  return `<li class="gallery-item">
+    <a class="gallery-link" href="${original}">
+      <img
+        class="gallery-image"
+        src="${preview}"
+        data-source="${original}"
+        alt="${description}"
+      />
+    </a>
+  </li>`;
+}
 
-   if (event.target.nodeName !== "IMG") {
-       return;
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
-       // клік між картинками
-    }
-    
-    const instance = basicLightbox.create(`<img src="${event.target.dataset.source}" width="1112" height="640">`);
-    // атрибути
-      instance.show();
+// функція яка будує галерею
+function renderGalleryItems(images) {
+  const galleryMarkup = images.map(createGalleryItem).join('');
+  galleryContainer.innerHTML = galleryMarkup;
+}
+//виклик функції яка будує галерею
+renderGalleryItems(images);
+
+const gallery = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
 });
